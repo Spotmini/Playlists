@@ -1,31 +1,22 @@
 package com.spotmini.playlists.models;
 
 public class SongsModel {
-    private long playlist_id;
-    private String song_artist;
-    private String song_name;
+    private String songArtist;
+    private String songName;
 
-    public long getPlaylist_id() {
-        return playlist_id;
+    public String getSongArtist() {
+        return songArtist;
     }
 
-    public void setPlaylist_id(long playlist_id) {
-        this.playlist_id = playlist_id;
+    public void setSongArtist(String songArtist) {
+        this.songArtist = songArtist;
     }
 
-    public String getSong_artist() {
-        return song_artist;
+    public String getSongName() {
+        return songName;
     }
 
-    public void setSong_artist(String song_artist) {
-        this.song_artist = song_artist;
-    }
-
-    public String getSong_name() {
-        return song_name;
-    }
-
-    public void setSong_name(String song_name) {
-        this.song_name = song_name;
+    public void setSongName(String songName) {
+        this.songName = songName;
     }
 }
