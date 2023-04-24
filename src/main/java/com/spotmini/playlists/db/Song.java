@@ -18,6 +18,10 @@ public class Song {
     @Column(name = "song_name")
     private String song_name;
 
+    @ManyToOne
+    @JoinColumn(name = "playlist")
+    private Playlist playlist;
+
     public Song(long playlist_id, String song_artist, String song_name) {
         this.playlist_id = playlist_id;
         this.song_artist = song_artist;

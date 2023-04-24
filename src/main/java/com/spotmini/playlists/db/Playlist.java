@@ -1,6 +1,8 @@
 package com.spotmini.playlists.db;
-
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "playlists")
@@ -14,11 +16,14 @@ public class Playlist {
     private String name;
 
     @Column(name = "owner_id")
-    private long owner_id;
+    private long ownerId;
+
+    @OneToMany(mappedBy = "playlist")
+    private List<Song> songs;
 
     public Playlist(String name, long owner_id) {
         this.name = name;
-        this.owner_id = owner_id;
+        this.ownerId = owner_id;
     }
 
     protected Playlist() { }
