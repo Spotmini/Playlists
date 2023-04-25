@@ -31,6 +31,11 @@ public class SongsController {
 
         if (toBeAddedIn == null) return;
 
+        var exists = restTemplate.getForObject(System.getenv("songs-service") + "/songs/" +
+                            newSong.getSongArtist() + "/" + newSong.getSongName() + "/exists", Boolean.class);
+
+        if (Boolean.FALSE.equals(exists)) return;
+
         songsRepository.save(
             new Song(toBeAddedIn, newSong.getSongArtist(), newSong.getSongName())
         );
