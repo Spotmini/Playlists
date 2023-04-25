@@ -5,8 +5,11 @@ import com.spotmini.playlists.models.SongsModel;
 import com.spotmini.playlists.repositories.PlaylistRepository;
 import com.spotmini.playlists.repositories.SongsRepository;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/songs")
@@ -23,8 +26,8 @@ public class SongsController {
     }
 
     @PostMapping
-    private void addSong(@RequestBody SongsModel newSong, @RequestParam String playlistName, @RequestParam long playlistOwner) {
-        var toBeAddedIn = playlistRepository.findByNameAndOwnerId(playlistName, playlistOwner);
+    private void addSong(@RequestBody SongsModel newSong) {
+        var toBeAddedIn = playlistRepository.findByNameAndOwnerId(newSong.getPlaylistName(), newSong.getOwnerId());
 
         if (toBeAddedIn == null) return;
 
@@ -34,8 +37,8 @@ public class SongsController {
     }
 
     @DeleteMapping
-    private void deleteSong(@RequestBody SongsModel songToBeDeleted, @RequestParam String playlistName, @RequestParam long playlistOwner) {
-        var toBeDeletedIn = playlistRepository.findByNameAndOwnerId(playlistName, playlistOwner);
+    private void deleteSong(@RequestBody SongsModel songToBeDeleted) {
+        var toBeDeletedIn = playlistRepository.findByNameAndOwnerId(songToBeDeleted.getPlaylistName(), songToBeDeleted.getOwnerId());
 
         if (toBeDeletedIn == null) return;
 
@@ -43,6 +46,17 @@ public class SongsController {
 
         songsRepository.delete(toBeDeleted);
 
+    }
+
+    @KafkaListener(topics = "deleteSong", groupId = "playlists")
+    private void deleteSong(HashMap<String, String> data) {
+        var songName = data.get("songName");
+        var songArtist = data.get("artistName");
+        if(songName == null) {
+            songsRepository.deleteAllBySongArtist(songArtist);
+            return;
+        }
+        songsRepository.deleteAllBySongArtistAndSongName(songArtist, songName);
     }
 
 }
